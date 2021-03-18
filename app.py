@@ -1,15 +1,9 @@
 # Importing essential libraries
 from flask import Flask, render_template, request,redirect,url_for
-from flask_bcrypt import Bcrypt
-from flask.helpers import flash
-import pandas as pd
-
-
 import speech_recognition as sr
 
-
 app = Flask(__name__)
-bcrypt = Bcrypt()
+
 import mysql.connector
 mydb = mysql.connector.connect(
   host="localhost",
