@@ -1,9 +1,21 @@
 # Importing essential libraries
 from flask import Flask, render_template, request,redirect,url_for
+
+from flask.helpers import flash
+import pandas as pd
+from google_trans_new import google_translator
+from pydub import AudioSegment 
+from pydub.playback import play 
+import gtts 
+from playsound import playsound
+import datetime
+import os
+
+
 import speech_recognition as sr
+translator = google_translator()
 
 app = Flask(__name__)
-
 import mysql.connector
 mydb = mysql.connector.connect(
   host="localhost",
@@ -20,7 +32,7 @@ def login():
         pwd = request.form['password']
     
         cursor = mydb.cursor(dictionary=True, buffered=True)
-        cursor.execute("SELECT * from user where user_name= %s AND user_password = %s", [uname,pwd])
+        cursor.execute("select * from user where user_name= %s AND user_password = %s", [uname,pwd])
         account = cursor.fetchone()
         if account:
             print('You are now logged in', 'success')
@@ -32,9 +44,8 @@ def login():
             error = 'Invalid Username or Password'
             return render_template('login.html', error=error)
     return render_template('login.html', error=error)
-        
-        
-        
+
+
 
 @app.route('/index',methods=['POST', 'GET'])
 def index():
@@ -72,18 +83,50 @@ def convert():
             print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    result = convert()
+    
+
+@app.route('/result', methods=['POST'])
+def result():
+
+    message = request.form['message']
+    lang=request.form['languages']
+    lang=lang.lower()
+    if(lang=="kannada"):
+        dest_code='kn'
+    if(lang=="japanese"):
+        dest_code='ja'
+    if(lang=="hindi"):
+        dest_code='hi'
+    if(lang=="telugu"):
+        dest_code='te'   
+    if(lang=="tamil"):
+        dest_code='ta'
+    if(lang=="gujarati"):
+        dest_code='gu'        
+    #text_to_translate = translator.translate(message, src= 'en', dest= dest_code)
+    text_to_translate = translator.translate(message, lang_src='en', lang_tgt=dest_code)
+    text = text_to_translate
+    #mytext = message
+    print(dest_code)
+    # Language in which you want to convert 
+    #language = dest_code
+      
+    # Passing the text and language to the engine,  
+    # here we have marked slow=False. Which tells  
+    # the module that the converted audio should  
+    # have a high speed 
+    tts = gtts.gTTS(text)
+    date_string = datetime.datetime.now().strftime("%d%m%Y%H%M%S")
+    filename = "voice"+date_string+".mp3"
+    tts.save(filename)
+    playsound(filename)
     mycursor = mydb.cursor()
-    sql = "INSERT INTO translator (sourceMessage,translatedTo) VALUES (%s,%s)"
-    val = ('user','gujarati')
+    sql = "INSERT INTO translator (sourceMessage,translatedTo,translatedMessage) VALUES (%s,%s, %s)"
+    val = (message, dest_code,text)
     mycursor.execute(sql, val)
     mydb.commit()
 
-    return render_template('index.html', prediction=result)    
-
-
+    return render_template("index.html", prediction=text)
 
 if __name__ == '__main__':
 	app.run(debug=True)
