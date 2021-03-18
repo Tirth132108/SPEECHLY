@@ -189,3 +189,10 @@ body{
 .safe{
     color: green;
 }
+#recordButton{
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    background-color: #f75f5f;
+    box-shadow: 0 12px 20px 0 rgba(212, 153, 43, 0.5);
+}

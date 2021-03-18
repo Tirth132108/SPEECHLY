@@ -1,7 +1,7 @@
 body {
   margin: 0;
   color: #9e3b08;
-  background: #f5bd8a;
+  background-image: url("img.jpg");
   font: 600 16px/18px 'Open Sans', sans-serif
 }
 
