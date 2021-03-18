@@ -5,6 +5,7 @@
         <meta charset="utf-8">
         <title>Language Translator</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
         <script src="https://kit.fontawesome.com/5f3f547070.js" crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css2?family=Yatra+One&display=swap" rel="stylesheet">
     </head>
@@ -64,7 +65,32 @@ stopButton.addEventListener("click", stopRecording);
 pauseButton.addEventListener("click", pauseRecording);
 
 function startRecording() {
-    console.log("recordButton clicked");
+    if('webkitSpeechRecognition' in window){
+                    
+        speechRecognizer.continuous = true;
+        speechRecognizer.interimResults = true;
+        speechRecognizer.lang = 'en-IN';
+        speechRecognizer.start();
+        var finalTranscripts = '';
+        speechRecognizer.onresult = function(event){
+            var interimTranscripts = '';
+            for(var i = event.resultIndex; i < event.results.length; i++){
+                var transcript = event.results[i][0].transcript;
+                transcript.replace("\n", "<br>");
+                if(event.results[i].isFinal){
+                    finalTranscripts += transcript;
+                }else{
+                    interimTranscripts += transcript;
+                }
+            }
+            r.value = finalTranscripts + interimTranscripts ;
+        };
+        speechRecognizer.onerror = function (event) {
+        };
+    }else{
+        r.innerHTML = 'No browser support. Please upgrade your browser';
+    }
+console.log("recordButton clicked");
 
     /*
         Simple constraints object, for more advanced audio features see
@@ -210,17 +236,36 @@ function createDownloadLink(blob) {
     recordingsList.appendChild(li);
 }
 
+
+
     </script>
-    	<div class="ml-container">
-    		<form action="{{ url_for('predict') }}" method="POST">
-        		
-        		
-        		<input type="submit" class="my-cta-button" value="Predict">
-        	</form>
-    	</div>
+    <div id="result" align="center">
+            <br>
+         <label style="font-size: 15px; color: black">Speech Input:</label>
+      <form action = "http://localhost:5000/result" method = "POST">
+        <input type="text" id="result1" size="40" maxlength=100 name="message" /></br></br>
+        <input type="text" name="languages"  class='message-box' placeholder=" to which language" required=""><br></br>
+<br>
+       
+    </br>
+         <p><input type = "submit" value = "submit" /></p>
+      </form>
+      
+        <script type="text/javascript">
+        
+        var overlay = document.getElementById("overlay");
+        
+        
+            var r = document.getElementById('result1');
+            var speechRecognizer = new webkitSpeechRecognition();// a new speech recognition object
+            
+            //function to start listening to voice and then convert it to text
+            
+        </script>
+    
     	<br></br>
     	<!--results-->
-    	<div class="results">
+    	<div class="results ml-container">
     	<h1>{{prediction}}</h1>
     	</div>
 
