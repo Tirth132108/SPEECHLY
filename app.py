@@ -1,6 +1,6 @@
 # Importing essential libraries
-from flask import Flask, render_template, request,redirect,url_for
-
+from types import MethodDescriptorType
+from flask import Flask, render_template, request,redirect,url_for,session
 from flask.helpers import flash
 import pandas as pd
 from google_trans_new import google_translator
@@ -16,6 +16,7 @@ import speech_recognition as sr
 translator = google_translator()
 
 app = Flask(__name__)
+app.secret_key = 'itsfantastic'     
 import mysql.connector
 mydb = mysql.connector.connect(
   host="localhost",
@@ -24,28 +25,48 @@ mydb = mysql.connector.connect(
   database="Speechly"
 )
 
+@app.route('/')
+def home():
+    return redirect(url_for('login'))
 @app.route('/login',methods=['POST', 'GET'])
 def login():
     error = ""
     if request.method == 'POST':
-        uname = request.form['username']
-        pwd = request.form['password']
-    
-        cursor = mydb.cursor(dictionary=True, buffered=True)
-        cursor.execute("select * from user where user_name= %s AND user_password = %s", [uname,pwd])
-        account = cursor.fetchone()
-        if account:
-            print('You are now logged in', 'success')
-            cursor.close()
-            return redirect(url_for('index'))
+        if request.form['register'] == 'Sign In':
+            uname = request.form['username']
+            pwd = request.form['password']
+        
+            cursor = mydb.cursor(dictionary=True, buffered=True)
+            cursor.execute("select * from user where user_name= %s AND user_password = %s", [uname,pwd])
+            account = cursor.fetchone()
+            if account:
+                print('You are now logged in', 'success')
+                session['user'] = uname
                 
+                cursor.close()
+                return redirect(url_for('index'))
+                    
 
+            else:
+                error = 'Invalid Username or Password'
+                return render_template('login.html', error=error)
         else:
-            error = 'Invalid Username or Password'
+            user_name = request.form['user']
+            new_pwd = request.form["pass"]
+            email = request.form["email"]
+
+            cursor = mydb.cursor(dictionary=True, buffered=True)
+            cursor.execute("INSERT INTO USER (user_name,user_password,user_email) VALUES (%s,%s, %s)", [user_name,new_pwd,email])
+            mydb.commit()
             return render_template('login.html', error=error)
+
     return render_template('login.html', error=error)
 
 
+@app.route('/logout', methods=['POST','GET'])
+def logout():
+    session.pop('user')
+    return redirect(url_for('login'))
 
 @app.route('/index',methods=['POST', 'GET'])
 def index():
@@ -93,16 +114,20 @@ def result():
     lang=lang.lower()
     if(lang=="kannada"):
         dest_code='kn'
+    if(lang=="marathi"):
+        dest_code='mr-in'
     if(lang=="japanese"):
         dest_code='ja'
     if(lang=="hindi"):
-        dest_code='hi'
+        dest_code='hi-in'
     if(lang=="telugu"):
-        dest_code='te'   
+        dest_code='te-in'   
     if(lang=="tamil"):
-        dest_code='ta'
+        dest_code='ta-in'
     if(lang=="gujarati"):
-        dest_code='gu'        
+        dest_code='gu-in' 
+    if(lang=="punjabi"):
+        dest_code='pa-in'       
     #text_to_translate = translator.translate(message, src= 'en', dest= dest_code)
     text_to_translate = translator.translate(message, lang_src='en', lang_tgt=dest_code)
     text = text_to_translate
