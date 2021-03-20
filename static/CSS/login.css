@@ -1,8 +1,16 @@
 body {
   margin: 0;
-  color: #9e3b08;
-  background-image: url("img.jpg");
-  font: 600 16px/18px 'Open Sans', sans-serif
+    margin-top: 0px;
+    width: 100%;
+    height: 100%;
+    color: #3c592b;
+    background-image: url(img.jpg);
+    background-position: center bottom;
+    background-origin: content-box;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    font: 600 16px/18px 'Open Sans', sans-serif;
 }
 
 .row{
@@ -15,18 +23,18 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  text-decoration: underline
+  text-decoration: underline;
+  font-size: 50px;
 }
 
 .login-box {
   width: 100%;
-  margin: auto;
-  margin-top:10px;
-  max-width: 525px;
-  min-height: 650px;
-  position: absolute;
-  /*background: url(retro.jpg) no-repeat center;*/
-  box-shadow: 0 12px 20px 0 rgba(158, 59, 8, .50), 0 17px 50px 0 rgba(0, 0, 0, .19)
+    /* margin-left: 25%; */
+    max-width: 500px;
+    min-height: 530px;
+    position: absolute;
+    right: 5%;
+    box-shadow: 0 12px 20px 0 rgb(60 89 43 / 50%), 0 17px 50px 0 rgb(0 0 0 / 19%);
 }
 
 .login-snip {
@@ -34,7 +42,7 @@ body {
   height: 100%;
   position: absolute;
   padding: 10%;
-  background: #ffcc99;
+  background: #b2d69c;
 }
 
 .login-snip .login,
@@ -73,7 +81,7 @@ body {
 .login-snip .sign-in:checked+.tab,
 .login-snip .sign-up:checked+.tab {
   color: #fff;
-  border-color: #9e3b08
+  border-color:#3c592b
 }
 
 .login-space {
@@ -93,16 +101,19 @@ body {
 .login-space .group .input,
 .login-space .group .button {
   width: 100%;
-  color: #9e3b08;
+  color: #3c592b;
   display: block
 }
 
 .login-space .group .input,
 .login-space .group .button {
   border: none;
-  padding: 15px 20px;
-  border-radius: 25px;
-  background: rgba(255, 255, 255, .1)
+    margin-top: 2%;
+    width: 100%;
+    height: 10%;
+    padding: 15px 20px;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, .1);
 }
 
 .login-space .group input[data-type="password"] {
@@ -111,13 +122,16 @@ body {
 }
 
 .login-space .group .label {
-  color: #9e3b08;
+  color: #3c592b;
   font-size: 12px
 }
 
 .login-space .group .button {
-  background: #9e3b08;
-  color:#fff
+  background: #3c592b;
+    color: #fff;
+    display: flex;
+    line-height: 0;
+    justify-content: center;
 }
 
 .login-space .group label .icon {
@@ -201,7 +215,7 @@ a {
 .hr {
   height: 2px;
   margin: 5%;
-  background: rgba(158, 59, 8, 0.2)
+  background: rgba(60, 89, 43, 0.2)
 }
 
 .foot {
@@ -214,5 +228,5 @@ a {
 }
 
 ::placeholder {
-  color: #b3b3b3
+  color: #fff
 }
