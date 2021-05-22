@@ -2,20 +2,18 @@
 from types import MethodDescriptorType
 from flask import Flask, render_template, request,redirect,url_for,session
 from flask.helpers import flash
-import pandas as pd
-from google_trans_new import google_translator
 from pydub import AudioSegment 
 from pydub.playback import play 
 import gtts 
 from playsound import playsound
 import datetime
 import os
-
-
 import speech_recognition as sr
+from google_trans_new import google_translator
 translator = google_translator()
 
-app = Flask(__name__)
+
+app = Flask(__name__, template_folder='templates')
 app.secret_key = 'itsfantastic'     
 import mysql.connector
 mydb = mysql.connector.connect(
@@ -65,11 +63,13 @@ def login():
 
 @app.route('/logout', methods=['POST','GET'])
 def logout():
-    session.pop('user')
+
+    
     return redirect(url_for('login'))
 
 @app.route('/index',methods=['POST', 'GET'])
 def index():
+    
     if request.method == "POST":
         f = request.files['audio_data']
         with open('audio.wav', 'wb') as audio:
@@ -86,6 +86,7 @@ def index():
 	#return render_template('index.html')
 
 def convert():
+    
     r = sr.Recognizer()
     with sr.AudioFile('audio.wav') as source:
         print("Say Something.....")
@@ -150,8 +151,8 @@ def result():
     val = (message, dest_code,text)
     mycursor.execute(sql, val)
     mydb.commit()
-
-    return render_template("index.html", prediction=text)
+    session['text'] = text
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
 	app.run(debug=True)
