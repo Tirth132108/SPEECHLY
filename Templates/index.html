@@ -33,7 +33,7 @@
                         <ul class="nav navbar-nav ml-auto nav-menu">
                             <li class="nav-item active"><a class="nav-link" href="#home">Home</a></li>
                             <li class="nav-item active"><a class="nav-link" href="#about">Recognition</a></li>
-                            <li class="nav-item active"><a class="nav-link" href="#">{{session['user']}}</a></li>
+                            <li class="nav-item active"><a class="nav-link" href="#" style="text-transform: capitalize;">{{session['user']}}</a></li>
                             <li class="nav-item active"><a class="nav-link active" href="/logout" name="logout">Log out</a></li> 
                         </ul>
                     </div>
@@ -55,7 +55,7 @@
                         </span>
                     </h1>
                 </div></h1>
-            <p class="lead" style="color:black ; font-weight: bold;"><strong>Welcome {{session['user']}} to your personal speech recognition sytem</strong></p>
+            <p class="lead" style="color:black ; font-weight: bold;"><strong>Welcome <span style="text-transform: capitalize;">{{session['user']}} </span> to your personal speech recognition sytem</strong></p>
         <!--<a href="#about" role="button" class="btn btn-danger btn-lg">Let&rsquo;s get Started</a>-->
         </div>    
     </div>
@@ -260,7 +260,16 @@
                 <label style="font-size: 50px; color: black">Speech Input</label>
             <form action = "http://localhost:5000/result" method = "POST">
                 <input type="text" id="result1" size="40" maxlength=100 name="message" /></br></br>
-                <input type="text" name="languages"  class='message-box' placeholder=" to which language" required=""><br></br>
+                <select name="languages" class="message-box" id="message-box" placeholder="Select language" required="">
+                    <option value="Gujarati">Gujarati</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Marathi">Marathi</option>
+                    <option value="Punjabi">Punjabi</option>
+                    <option value="Kannada">Kannada</option>
+                    <option value="Telugu">Telugu</option>
+                    <option value="Tamil">Tamil</option>
+                  </select>
+                <br></br>
             <br>
         
                 <p><input type = "submit" value = "submit" id="send" /></p>
@@ -281,7 +290,7 @@
                 <br></br>
                 <!--results-->
                 <div class="results ml-container">
-                <h1>{{prediction}}</h1>
+                <h1>{{session['text']}}</h1>
                 </div>
             </div>
         
